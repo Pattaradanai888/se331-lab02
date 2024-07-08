@@ -7,7 +7,7 @@ import { RouterLink, RouterView } from 'vue-router'
     <header>
       <div class="wrapper">
         <nav>
-          <RouterLink to="/">Home</RouterLink> |
+          <RouterLink to="/">Event</RouterLink> |
           <RouterLink to="/about">About</RouterLink>
         </nav>
       </div>
@@ -17,12 +17,16 @@ import { RouterLink, RouterView } from 'vue-router'
   </div>
 </template>
 
-<style scoped>
+<style>
 #layout {
   font-family: Avenir, Helvetica, Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+h2 {
+  font-size: 20px;
 }
 
 nav {
