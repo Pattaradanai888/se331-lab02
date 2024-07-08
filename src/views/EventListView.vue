@@ -36,6 +36,17 @@ const events = ref<Event[]>([
     time: '11:00',
     petsAllowed: false,
     organizer: 'Carey Wales'
+  },
+  {
+    id: 1234567,
+    category: 'gaming',
+    title: 'Please take a shower',
+    description: 'The reduce residual smell in air',
+    location: 'Bathroom',
+    date: 'July 22, 2022',
+    time: '12:00',
+    petsAllowed: false,
+    organizer: 'Riot games'
   }
 ])
 </script>
