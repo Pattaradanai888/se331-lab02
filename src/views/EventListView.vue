@@ -3,18 +3,33 @@ import EventCard from '@/components/EventCard.vue'
 import EventType from '@/components/EventType.vue'
 import EventService from '@/services/EventService'
 import type { Event } from '@/types'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watchEffect, computed } from 'vue'
+const totalEvent = ref<number>(0)
+const props = defineProps({
+  page: {
+    type: Number,
+    required: true
+  }
+})
 
 const events = ref<Event[]>(null)
 
 onMounted(() => {
-  EventService.getEvents()
-    .then((response) => {
-      events.value = response.data
-    })
-    .catch((error) => {
-      console.error('There was an error!', error)
-    })
+  watchEffect(() => {
+    EventService.getEvents(2, props.page)
+      .then((response) => {
+        events.value = response.data
+        totalEvent.value = response.headers['x-total-count']
+      })
+      .catch((error) => {
+        console.error('There was an error!', error)
+      })
+  })
+})
+const hasNextPage = computed(() => {
+  // first calculate the the total page
+  const totalPages = Math.ceil(totalEvent.value / 2)
+  return props.page.valueOf() < totalPages
 })
 </script>
 
@@ -24,6 +39,20 @@ onMounted(() => {
   <div class="events-container">
     <div class="events">
       <EventCard v-for="event in events" :key="event.id" :event="event" />
+      <RouterLink
+        :to="{ name: 'event-list', query: { page: page - 1 } }"
+        rel="prev"
+        v-if="page != 1"
+      >
+        Prev Page
+      </RouterLink>
+      <RouterLink
+        :to="{ name: 'event-list', query: { page: page + 1 } }"
+        rel="next"
+        v-if="hasNextPage"
+      >
+        Next Page
+      </RouterLink>
     </div>
     <div class="events-type">
       <EventType v-for="event in events" :key="event.id" :event="event" />
