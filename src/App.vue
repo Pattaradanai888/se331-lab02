@@ -1,5 +1,14 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { ref } from 'vue'
+
+const pageSize = ref(2)
+const router = useRouter()
+
+const updatePageSize = (size: number) => {
+  pageSize.value = size
+  router.push({ name: 'event-list', query: { size: size } })
+}
 </script>
 
 <template>
@@ -11,6 +20,14 @@ import { RouterLink, RouterView } from 'vue-router'
           <RouterLink :to="{ name: 'student' }">Student</RouterLink> |
           <RouterLink :to="{ name: 'about' }">About</RouterLink>
         </nav>
+        <div>
+          <label for="page-size">Events per page:</label>
+          <select id="page-size" v-model="pageSize" @change="updatePageSize(pageSize)">
+            <option value="2">2</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+          </select>
+        </div>
       </div>
     </header>
 

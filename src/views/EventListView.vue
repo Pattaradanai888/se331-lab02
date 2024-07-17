@@ -9,6 +9,10 @@ const props = defineProps({
   page: {
     type: Number,
     required: true
+  },
+  size: {
+    type: Number,
+    required: true
   }
 })
 
@@ -16,7 +20,7 @@ const events = ref<Event[]>(null)
 
 onMounted(() => {
   watchEffect(() => {
-    EventService.getEvents(2, props.page)
+    EventService.getEvents(props.size, props.page)
       .then((response) => {
         events.value = response.data
         totalEvent.value = response.headers['x-total-count']
@@ -28,8 +32,8 @@ onMounted(() => {
 })
 const hasNextPage = computed(() => {
   // first calculate the the total page
-  const totalPages = Math.ceil(totalEvent.value / 2)
-  return props.page.valueOf() < totalPages
+  const totalPages = Math.ceil(totalEvent.value / props.size)
+  return props.page < totalPages
 })
 </script>
 
@@ -41,15 +45,15 @@ const hasNextPage = computed(() => {
       <EventCard v-for="event in events" :key="event.id" :event="event" />
       <div class="pagination">
         <RouterLink
-          :to="{ name: 'event-list', query: { page: page - 1 } }"
+          :to="{ name: 'event-list', query: { page: page - 1, size: props.size } }"
           rel="prev"
-          v-if="page != 1"
+          v-if="props.page != 1"
           id="page-prev"
         >
           Prev Page
         </RouterLink>
         <RouterLink
-          :to="{ name: 'event-list', query: { page: page + 1 } }"
+          :to="{ name: 'event-list', query: { page: props.page + 1, size: props.size } }"
           rel="next"
           v-if="hasNextPage"
           id="page-next"
