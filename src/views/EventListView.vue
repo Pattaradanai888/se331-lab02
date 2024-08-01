@@ -4,6 +4,7 @@ import EventType from '@/components/EventType.vue'
 import EventService from '@/services/EventService'
 import type { Event } from '@/types'
 import { ref, onMounted, watchEffect, computed } from 'vue'
+import { useRouter } from 'vue-router'
 const totalEvent = ref<number>(0)
 const props = defineProps({
   page: {
@@ -17,7 +18,7 @@ const props = defineProps({
 })
 
 const events = ref<Event[]>(null)
-
+const router = useRouter()
 onMounted(() => {
   watchEffect(() => {
     EventService.getEvents(props.size, props.page)
@@ -26,7 +27,11 @@ onMounted(() => {
         totalEvent.value = response.headers['x-total-count']
       })
       .catch((error) => {
-        console.error('There was an error!', error)
+        if (error.response && error.response.status === 404) {
+          router.push({ name: '404-resource', params: { resource: 'event' } })
+        } else {
+          router.push({ name: 'network-error-view' })
+        }
       })
   })
 })

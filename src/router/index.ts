@@ -50,12 +50,12 @@ const router = createRouter({
     },
     {
       path: '/:catchAll(.*)',
-      name: 'not found',
+      name: 'not-found',
       component: NotFoundView
     },
     {
       path: '/network-error',
-      name: 'network-error',
+      name: 'network-error-view',
       component: NetworkErrorView
     }
   ]
